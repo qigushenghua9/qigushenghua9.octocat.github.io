@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 引入CSS样式 -->
+    <link rel="stylesheet" href="style.css">
+    <!-- 引入图标（可选，美化导航） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>我的个人博客</title>
+</head>
+<body>
+    <!-- 1. 顶部导航栏 -->
+    <header class="navbar">
+        <div class="container">
+            <a href="#" class="logo">我的博客</a>
+            <nav class="nav-links">
+                <a href="#" class="active" data-page="home">首页</a>
+                <a href="#" data-page="about">关于我</a>
+                <a href="#" data-page="archive">归档</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 2. 核心内容区：文章列表 -->
+    <main class="container main-content">
+        <h1 class="page-title">最新文章</h1>
+        <div class="article-list">
+            <!-- 文章卡片1 -->
+            <article class="article-card">
+                <img src="https://unsplash.com/photos/0f9QnW129J4/download?w=800" alt="博客文章封面" class="article-img">
+                <div class="article-content">
+                    <h2 class="article-title"><a href="#">新手学HTML+CSS搭建静态博客的入门指南</a></h2>
+                    <div class="article-meta">
+                        <span><i class="fa-solid fa-calendar"></i> 2026-03-20</span>
+                        <span><i class="fa-solid fa-tag"></i> 前端开发</span>
+                    </div>
+                    <p class="article-desc">这是我的第一篇博客文章，记录了从零开始搭建静态博客的过程，包括HTML结构、CSS样式的基础写法，适合和我一样的新手参考...</p>
+                    <a href="#" class="read-more">阅读全文</a>
+                </div>
+            </article>
+
+            <!-- 文章卡片2 -->
+            <article class="article-card">
+                <img src="https://unsplash.com/photos/5fNmWej4tAA/download?w=800" alt="博客文章封面" class="article-img">
+                <div class="article-content">
+                    <h2 class="article-title"><a href="#">JavaScript实现博客导航栏高亮效果</a></h2>
+                    <div class="article-meta">
+                        <span><i class="fa-solid fa-calendar"></i> 2026-03-19</span>
+                        <span><i class="fa-solid fa-tag"></i> JavaScript</span>
+                    </div>
+                    <p class="article-desc">分享一个简单的JS小功能：点击导航栏的不同选项时，给当前选中的选项添加高亮样式，提升博客的交互体验...</p>
+                    <a href="#" class="read-more">阅读全文</a>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- 3. 底部页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 我的个人博客 | 用HTML+CSS+JS搭建</p>
+        </div>
+    </footer>
+
+    <!-- 引入JS交互 -->
+    <script src="script.js"></script>
+</body>
+</html>
