@@ -3,67 +3,637 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 引入CSS样式 -->
-    <link rel="stylesheet" href="style.css">
-    <!-- 引入图标（可选，美化导航） -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>我的个人博客</title>
+    <title>Tech Insights & Innovations | 个人技术博客</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#8b5cf6',
+                        accent: '#10b981',
+                        dark: '#1e293b',
+                        light: '#f8fafc'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-in-out',
+                        'typing': 'typing 3.5s steps(40, end)',
+                        'blink-caret': 'blinkCaret 0.75s step-end infinite'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        typing: {
+                            'from': { width: '0' },
+                            'to': { width: '100%' }
+                        },
+                        blinkCaret: {
+                            'from, to': { borderColor: 'transparent' },
+                            '50%': { borderColor: 'currentColor' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .bg-glass {
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            .skill-bar {
+                @apply h-2 rounded-full bg-gray-200 overflow-hidden;
+            }
+            .skill-progress {
+                @apply h-full rounded-full transition-all duration-1000 ease-out;
+            }
+            .timeline-item {
+                @apply relative pl-8 pb-8 border-l border-gray-200;
+            }
+            .timeline-item::before {
+                content: '';
+                @apply absolute w-4 h-4 bg-primary rounded-full -left-2 top-0;
+            }
+            .timeline-item:last-child {
+                @apply border-0;
+            }
+            .typewriter {
+                @apply overflow-hidden border-r-4 border-white whitespace-nowrap animate-typing;
+            }
+            .typewriter-caret {
+                @apply animate-blink-caret;
+            }
+        }
+    </style>
 </head>
-<body>
-    <!-- 1. 顶部导航栏 -->
-    <header class="navbar">
-        <div class="container">
-            <a href="#" class="logo">我的博客</a>
-            <nav class="nav-links">
-                <a href="#" class="active" data-page="home">首页</a>
-                <a href="#" data-page="about">关于我</a>
-                <a href="#" data-page="archive">归档</a>
-            </nav>
+<body class="bg-light text-dark">
+    <!-- 全局导航 -->
+    <header class="sticky top-0 z-50 bg-white shadow-md">
+        <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-primary">
+                <span class="fa fa-code mr-2"></span>TechBlog
+            </a>
+            
+            <!-- 桌面端导航 -->
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html" class="nav-link active font-medium hover:text-primary transition-colors">首页</a>
+                <a href="#articles" class="nav-link font-medium hover:text-primary transition-colors">文章</a>
+                <a href="#about" class="nav-link font-medium hover:text-primary transition-colors">关于我</a>
+                <a href="#contact" class="nav-link font-medium hover:text-primary transition-colors">留言板</a>
+            </div>
+            
+            <!-- 移动端菜单按钮 -->
+            <button id="menu-toggle" class="md:hidden text-dark focus:outline-none">
+                <span class="fa fa-bars text-xl"></span>
+            </button>
+        </nav>
+        
+        <!-- 移动端导航菜单 -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white border-t border-gray-200">
+            <div class="container mx-auto px-4 py-2 flex flex-col space-y-3">
+                <a href="index.html" class="mobile-nav-link active py-2 font-medium hover:text-primary transition-colors">首页</a>
+                <a href="#articles" class="mobile-nav-link py-2 font-medium hover:text-primary transition-colors">文章</a>
+                <a href="#about" class="mobile-nav-link py-2 font-medium hover:text-primary transition-colors">关于我</a>
+                <a href="#contact" class="mobile-nav-link py-2 font-medium hover:text-primary transition-colors">留言板</a>
+            </div>
         </div>
     </header>
 
-    <!-- 2. 核心内容区：文章列表 -->
-    <main class="container main-content">
-        <h1 class="page-title">最新文章</h1>
-        <div class="article-list">
-            <!-- 文章卡片1 -->
-            <article class="article-card">
-                <img src="https://unsplash.com/photos/0f9QnW129J4/download?w=800" alt="博客文章封面" class="article-img">
-                <div class="article-content">
-                    <h2 class="article-title"><a href="#">新手学HTML+CSS搭建静态博客的入门指南</a></h2>
-                    <div class="article-meta">
-                        <span><i class="fa-solid fa-calendar"></i> 2026-03-20</span>
-                        <span><i class="fa-solid fa-tag"></i> 前端开发</span>
-                    </div>
-                    <p class="article-desc">这是我的第一篇博客文章，记录了从零开始搭建静态博客的过程，包括HTML结构、CSS样式的基础写法，适合和我一样的新手参考...</p>
-                    <a href="#" class="read-more">阅读全文</a>
-                </div>
-            </article>
+    <main>
+        <!-- Hero 区域 -->
+        <section class="relative h-screen flex items-center justify-center overflow-hidden">
+            <div class="absolute inset-0 z-0">
+                <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/81ae0ec4625744f6beb00b19575a8075~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260414222800F41C8E3D74834C667F8D&rrcfp=f06b921b&x-expires=1778768896&x-signature=GjsRb4ahMq%2F7Woi3RyaDphhxujc%3D" 
+                     alt="Tech Background" 
+                     class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-r from-primary/70 to-secondary/70"></div>
+            </div>
+            
+            <div class="container mx-auto px-4 z-10 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 animate-fade-in text-shadow">
+                    <span id="typewriter" class="typewriter inline-block"></span>
+                </h1>
+                <p class="text-xl md:text-2xl text-white mb-8 animate-slide-up">
+                    分享前端开发、UI/UX设计和软件工程的见解与实践
+                </p>
+                <a href="#articles" class="inline-block bg-white text-primary font-medium px-8 py-3 rounded-full hover:bg-gray-100 transition-colors shadow-lg animate-slide-up">
+                    浏览文章
+                </a>
+            </div>
+            
+            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+                <a href="#articles" class="text-white text-4xl">
+                    <span class="fa fa-chevron-down"></span>
+                </a>
+            </div>
+        </section>
 
-            <!-- 文章卡片2 -->
-            <article class="article-card">
-                <img src="https://unsplash.com/photos/5fNmWej4tAA/download?w=800" alt="博客文章封面" class="article-img">
-                <div class="article-content">
-                    <h2 class="article-title"><a href="#">JavaScript实现博客导航栏高亮效果</a></h2>
-                    <div class="article-meta">
-                        <span><i class="fa-solid fa-calendar"></i> 2026-03-19</span>
-                        <span><i class="fa-solid fa-tag"></i> JavaScript</span>
-                    </div>
-                    <p class="article-desc">分享一个简单的JS小功能：点击导航栏的不同选项时，给当前选中的选项添加高亮样式，提升博客的交互体验...</p>
-                    <a href="#" class="read-more">阅读全文</a>
+        <!-- 文章列表 -->
+        <section id="articles" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">最新文章</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- 文章卡片 1 -->
+                    <article class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/f040d844fb324bc6a2c08760e289a8a0~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260414222800F41C8E3D74834C667F8D&rrcfp=f06b921b&x-expires=1778768910&x-signature=%2FdRSfkqiiuZpp8rm7HyZPDpFniw%3D" 
+                                 alt="Web Development" 
+                                 class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                            <div class="absolute top-4 right-4 bg-primary text-white text-xs font-medium px-3 py-1 rounded-full">
+                                前端开发
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2 hover:text-primary transition-colors">
+                                <a href="article.html?id=1">Web开发基础：HTML5、CSS3和JavaScript</a>
+                            </h3>
+                            <p class="text-gray-600 mb-4 line-clamp-3">
+                                本文详细介绍了现代Web开发的三大基础技术，包括HTML5的语义化标签、CSS3的新特性以及JavaScript的核心概念和ES6+语法。
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">
+                                    <i class="fa fa-calendar mr-1"></i> 2024-07-15
+                                </span>
+                                <a href="article.html?id=1" class="text-primary hover:underline font-medium">
+                                    阅读更多 <i class="fa fa-arrow-right ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <!-- 文章卡片 2 -->
+                    <article class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/953b75fe284d4ac4994a9d8b493172d9~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260414222800F41C8E3D74834C667F8D&rrcfp=f06b921b&x-expires=1778768913&x-signature=fiF67Qji3kp5wJ9BUy0AEnlzP%2Bg%3D" 
+                                 alt="UI/UX Design" 
+                                 class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                            <div class="absolute top-4 right-4 bg-secondary text-white text-xs font-medium px-3 py-1 rounded-full">
+                                UI/UX设计
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2 hover:text-primary transition-colors">
+                                <a href="article.html?id=2">现代UI/UX设计原则与实践</a>
+                            </h3>
+                            <p class="text-gray-600 mb-4 line-clamp-3">
+                                探讨当代用户界面和用户体验设计的核心原则，包括响应式设计、交互设计模式、色彩心理学以及如何创建直观且美观的数字产品。
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">
+                                    <i class="fa fa-calendar mr-1"></i> 2024-07-10
+                                </span>
+                                <a href="article.html?id=2" class="text-primary hover:underline font-medium">
+                                    阅读更多 <i class="fa fa-arrow-right ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <!-- 文章卡片 3 -->
+                    <article class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/b56ccf193e01411b949b744ebaa11e2f~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260414222800F41C8E3D74834C667F8D&rrcfp=f06b921b&x-expires=1778768914&x-signature=89OWZd4vuQacZy9s09tqv6aGXFY%3D" 
+                                 alt="Software Engineering" 
+                                 class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                            <div class="absolute top-4 right-4 bg-accent text-white text-xs font-medium px-3 py-1 rounded-full">
+                                软件工程
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2 hover:text-primary transition-colors">
+                                <a href="article.html?id=3">软件工程最佳实践：从需求到部署</a>
+                            </h3>
+                            <p class="text-gray-600 mb-4 line-clamp-3">
+                                全面介绍软件工程的生命周期管理，包括需求分析、系统设计、编码规范、测试策略、持续集成/部署以及项目管理方法论。
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">
+                                    <i class="fa fa-calendar mr-1"></i> 2024-07-05
+                                </span>
+                                <a href="article.html?id=3" class="text-primary hover:underline font-medium">
+                                    阅读更多 <i class="fa fa-arrow-right ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
                 </div>
-            </article>
-        </div>
+                
+                <div class="text-center mt-12">
+                    <a href="#" class="inline-block bg-primary text-white font-medium px-8 py-3 rounded-full hover:bg-primary/90 transition-colors shadow-md">
+                        查看更多文章
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 关于我 -->
+        <section id="about" class="py-20 bg-white">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">关于我</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div class="order-2 lg:order-1">
+                        <h3 class="text-2xl font-bold mb-4 text-primary">个人简介</h3>
+                        <p class="text-gray-700 mb-6 leading-relaxed">
+                            我是一名拥有5年经验的全栈开发工程师，专注于前端开发、UI/UX设计和软件工程最佳实践。我热爱创建用户友好、性能卓越的Web应用，并乐于分享我的知识和经验。
+                        </p>
+                        <p class="text-gray-700 mb-8 leading-relaxed">
+                            在过去的职业生涯中，我参与了多个大型项目的开发，涵盖电子商务、企业管理系统和教育平台等领域。我擅长将复杂的技术概念转化为易于理解的内容，帮助团队成员和读者更好地掌握技术知识。
+                        </p>
+                        
+                        <h3 class="text-2xl font-bold mb-4 text-primary">技能专长</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="font-medium">HTML/CSS/JavaScript</span>
+                                    <span>95%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress bg-primary" style="width: 0%;" data-width="95%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="font-medium">React & Vue</span>
+                                    <span>90%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress bg-primary" style="width: 0%;" data-width="90%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="font-medium">UI/UX设计</span>
+                                    <span>85%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress bg-secondary" style="width: 0%;" data-width="85%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="font-medium">Node.js & 后端开发</span>
+                                    <span>80%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress bg-accent" style="width: 0%;" data-width="80%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="font-medium">DevOps & 云服务</span>
+                                    <span>75%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress bg-accent" style="width: 0%;" data-width="75%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-1 lg:order-2">
+                        <h3 class="text-2xl font-bold mb-6 text-primary">工作经历</h3>
+                        <div class="space-y-1">
+                            <div class="timeline-item pl-8 pb-8">
+                                <div class="mb-2">
+                                    <span class="text-lg font-bold">高级全栈开发工程师</span>
+                                    <span class="ml-2 text-sm bg-primary/10 text-primary px-2 py-1 rounded">2022 - 至今</span>
+                                </div>
+                                <p class="text-gray-700">科技创新公司</p>
+                                <p class="text-gray-600 mt-2">
+                                    负责公司核心产品的前端架构设计和开发，优化用户体验，提升产品性能，带领团队完成多个重要项目。
+                                </p>
+                            </div>
+                            
+                            <div class="timeline-item pl-8 pb-8">
+                                <div class="mb-2">
+                                    <span class="text-lg font-bold">前端开发工程师</span>
+                                    <span class="ml-2 text-sm bg-primary/10 text-primary px-2 py-1 rounded">2020 - 2022</span>
+                                </div>
+                                <p class="text-gray-700">互联网科技有限公司</p>
+                                <p class="text-gray-600 mt-2">
+                                    参与电子商务平台的前端开发，实现响应式设计，优化页面性能，提升用户体验。
+                                </p>
+                            </div>
+                            
+                            <div class="timeline-item pl-8">
+                                <div class="mb-2">
+                                    <span class="text-lg font-bold">Web开发实习生</span>
+                                    <span class="ml-2 text-sm bg-primary/10 text-primary px-2 py-1 rounded">2019 - 2020</span>
+                                </div>
+                                <p class="text-gray-700">软件开发工作室</p>
+                                <p class="text-gray-600 mt-2">
+                                    参与多个网站项目的开发和维护，学习并应用现代前端技术和开发流程。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 留言板 -->
+        <section id="contact" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">留言板</h2>
+                
+                <div class="max-w-4xl mx-auto">
+                    <div class="bg-white rounded-xl shadow-md p-8 mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-primary">给我留言</h3>
+                        
+                        <form id="message-form" class="space-y-6">
+                            <div>
+                                <label for="name" class="block text-gray-700 font-medium mb-2">昵称</label>
+                                <input type="text" id="name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入您的昵称" required>
+                                <p id="name-error" class="hidden text-red-500 text-sm mt-1"></p>
+                            </div>
+                            
+                            <div>
+                                <label for="message" class="block text-gray-700 font-medium mb-2">留言内容</label>
+                                <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入您的留言内容" required></textarea>
+                                <p id="message-error" class="hidden text-red-500 text-sm mt-1"></p>
+                            </div>
+                            
+                            <div class="flex justify-end">
+                                <button type="submit" id="submit-btn" class="bg-primary text-white font-medium px-8 py-3 rounded-lg hover:bg-primary/90 transition-colors shadow-md">
+                                    提交留言
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div id="messages-container">
+                        <h3 class="text-2xl font-bold mb-6 text-primary">最新留言</h3>
+                        
+                        <div id="messages-list" class="space-y-6">
+                            <!-- 留言将通过JavaScript动态添加 -->
+                        </div>
+                        
+                        <div id="no-messages" class="text-center py-12 text-gray-500">
+                            暂无留言，快来发表第一条留言吧！
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- 3. 底部页脚 -->
-    <footer class="footer">
-        <div class="container">
-            <p>© 2026 我的个人博客 | 用HTML+CSS+JS搭建</p>
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">关于博客</h3>
+                    <p class="text-gray-400">
+                        这是一个分享前端开发、UI/UX设计和软件工程知识的个人博客，致力于帮助开发者提升技能和解决问题。
+                    </p>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-bold mb-4">快速链接</h3>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-400 hover:text-white transition-colors">首页</a></li>
+                        <li><a href="#articles" class="text-gray-400 hover:text-white transition-colors">文章列表</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-white transition-colors">关于我</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-white transition-colors">留言板</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-bold mb-4">联系方式</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <span class="fa fa-envelope mr-2 text-primary"></span>
+                            <a href="mailto:contact@techblog.com" class="text-gray-400 hover:text-white transition-colors">contact@techblog.com</a>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="fa fa-github mr-2 text-primary"></span>
+                            <a href="https://github.com" target="_blank" class="text-gray-400 hover:text-white transition-colors">GitHub</a>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="fa fa-twitter mr-2 text-primary"></span>
+                            <a href="https://twitter.com" target="_blank" class="text-gray-400 hover:text-white transition-colors">Twitter</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+                <p class="text-gray-400">© 2024 Tech Blog. 保留所有权利。</p>
+            </div>
         </div>
     </footer>
 
-    <!-- 引入JS交互 -->
-    <script src="script.js"></script>
+    <!-- 返回顶部按钮 -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg opacity-0 invisible transition-all duration-300 hover:bg-primary/90">
+        <span class="fa fa-arrow-up"></span>
+    </button>
+
+    <script>
+        // 全局导航
+        document.addEventListener('DOMContentLoaded', function() {
+            // 移动端菜单切换
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            menuToggle.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // 路径高亮
+            const path = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
+            
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === path || (path === '/' && link.getAttribute('href') === 'index.html')) {
+                    link.classList.add('text-primary');
+                }
+            });
+            
+            // 打字机效果
+            const typewriterElement = document.getElementById('typewriter');
+            const text = "探索技术的无限可能";
+            let index = 0;
+            
+            function typeWriter() {
+                if (index < text.length) {
+                    typewriterElement.textContent += text.charAt(index);
+                    index++;
+                    setTimeout(typeWriter, 100);
+                }
+            }
+            
+            typeWriter();
+            
+            // 技能进度条
+            const skillBars = document.querySelectorAll('.skill-progress');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const width = entry.target.getAttribute('data-width');
+                        entry.target.style.width = width;
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            skillBars.forEach(bar => {
+                observer.observe(bar);
+            });
+            
+            // 返回顶部按钮
+            const backToTopButton = document.getElementById('back-to-top');
+            
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 600) {
+                    backToTopButton.classList.remove('opacity-0', 'invisible');
+                    backToTopButton.classList.add('opacity-100', 'visible');
+                } else {
+                    backToTopButton.classList.remove('opacity-100', 'visible');
+                    backToTopButton.classList.add('opacity-0', 'invisible');
+                }
+            });
+            
+            backToTopButton.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // 留言板功能
+            const messageForm = document.getElementById('message-form');
+            const nameInput = document.getElementById('name');
+            const messageInput = document.getElementById('message');
+            const nameError = document.getElementById('name-error');
+            const messageError = document.getElementById('message-error');
+            const messagesList = document.getElementById('messages-list');
+            const noMessages = document.getElementById('no-messages');
+            const submitBtn = document.getElementById('submit-btn');
+            
+            // 从localStorage加载留言
+            loadMessages();
+            
+            messageForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // 表单验证
+                let isValid = true;
+                
+                if (nameInput.value.trim().length < 2) {
+                    nameError.textContent = '昵称至少需要2个字符';
+                    nameError.classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    nameError.classList.add('hidden');
+                }
+                
+                if (messageInput.value.trim().length < 5) {
+                    messageError.textContent = '留言内容至少需要5个字符';
+                    messageError.classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    messageError.classList.add('hidden');
+                }
+                
+                if (isValid) {
+                    // 显示加载状态
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 提交中...';
+                    
+                    // 模拟提交延迟
+                    setTimeout(() => {
+                        // 创建新留言
+                        const newMessage = {
+                            id: Date.now(),
+                            name: nameInput.value.trim(),
+                            message: messageInput.value.trim(),
+                            date: new Date().toLocaleString('zh-CN')
+                        };
+                        
+                        // 获取现有留言
+                        let messages = JSON.parse(localStorage.getItem('messages')) || [];
+                        
+                        // 添加新留言
+                        messages.unshift(newMessage);
+                        
+                        // 保存到localStorage
+                        localStorage.setItem('messages', JSON.stringify(messages));
+                        
+                        // 更新留言列表
+                        loadMessages();
+                        
+                        // 重置表单
+                        messageForm.reset();
+                        
+                        // 恢复按钮状态
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '提交留言';
+                        
+                        // 显示成功提示
+                        alert('留言提交成功！');
+                    }, 1000);
+                }
+            });
+            
+            function loadMessages() {
+                // 获取留言数据
+                const messages = JSON.parse(localStorage.getItem('messages')) || [];
+                
+                // 清空留言列表
+                messagesList.innerHTML = '';
+                
+                if (messages.length > 0) {
+                    // 显示留言列表
+                    noMessages.classList.add('hidden');
+                    
+                    // 添加留言到列表
+                    messages.forEach(msg => {
+                        const messageElement = document.createElement('div');
+                        messageElement.className = 'bg-white rounded-lg shadow-md p-6 animate-fade-in';
+                        messageElement.innerHTML = `
+                            <div class="flex justify-between items-start mb-3">
+                                <h4 class="font-bold text-lg">${msg.name}</h4>
+                                <span class="text-sm text-gray-500">${msg.date}</span>
+                            </div>
+                            <p class="text-gray-700">${msg.message}</p>
+                        `;
+                        messagesList.appendChild(messageElement);
+                    });
+                } else {
+                    // 显示无留言提示
+                    noMessages.classList.remove('hidden');
+                }
+            }
+        });
+    </script>
 </body>
 </html>
