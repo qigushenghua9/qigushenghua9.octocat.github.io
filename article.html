@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章详情 | Tech Insights & Innovations</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#8b5cf6',
+                        accent: '#10b981',
+                        dark: '#1e293b',
+                        light: '#f8fafc'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-in-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .code-block {
+                @apply relative bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto font-mono text-sm leading-relaxed;
+            }
+            .code-block::before {
+                content: '';
+                @apply absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-lg;
+            }
+            .code-line {
+                @apply pl-4 border-l-2 border-gray-800;
+            }
+            .quote {
+                @apply pl-4 border-l-4 border-primary italic text-gray-600 my-6;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-dark">
+    <!-- 全局导航 -->
+    <header class="sticky top-0 z-50 bg-white shadow-md">
+        <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-primary">
+                <span class="fa fa-code mr-2"></span>TechBlog
+            </a>
+            
+            <!-- 桌面端导航 -->
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html" class="nav-link font-medium hover:text-primary transition-colors">首页</a>
+                <a href="index.html#articles" class="nav-link font-medium hover:text-primary transition-colors">文章</a>
+                <a href="index.html#about" class="nav-link font-medium hover:text-primary transition-colors">关于我</a>
+                <a href="index.html#contact" class="nav-link font-medium hover:text-primary transition-colors">留言板</a>
+            </div>
+            
+            <!-- 移动端菜单按钮 -->
+            <button id="menu-toggle" class="md:hidden text-dark focus:outline-none">
+                <span class="fa fa-bars text-xl"></span>
+            </button>
+        </nav>
+        
+        <!-- 移动端导航菜单 -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white border-t border-gray-200">
+            <div class="container mx-auto px-4 py-2 flex flex-col space-y-3">
+                <a href="index.html" class="mobile-nav-link py-2 font-medium hover:text-primary transition-colors">首页</a>
+                <a href="index.html#articles" class="mobile-nav-link py-2 font-medium hover:text-primary transition-colors">文章</a>
+                <a href="index.html#about" class="mobile-nav-link py-2 font-medium hover:text-primary transition-colors">关于我</a>
+                <a href="index.html#contact" class="mobile-nav-link py-2 font-medium hover:text-primary transition-colors">留言板</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="py-12">
+        <div class="container mx-auto px-4">
+            <!-- 文章内容 -->
+            <article id="article-content" class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden animate-fade-in">
+                <!-- 文章头部 -->
+                <div class="relative h-64 md:h-80">
+                    <img id="article-image" src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/f040d844fb324bc6a2c08760e289a8a0~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260414222800F41C8E3D74834C667F8D&rrcfp=f06b921b&x-expires=1778768910&x-signature=%2FdRSfkqiiuZpp8rm7HyZPDpFniw%3D" 
+                         alt="文章封面" 
+                         class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+                        <div class="p-6 md:p-8 w-full">
+                            <span id="article-category" class="inline-block bg-primary text-white text-sm font-medium px-3 py-1 rounded-full mb-4">
+                                前端开发
+                            </span>
+                            <h1 id="article-title" class="text-2xl md:text-4xl font-bold text-white mb-2">
+                                Web开发基础：HTML5、CSS3和JavaScript
+                            </h1>
+                            <div class="flex items-center text-gray-200 text-sm">
+                                <span class="mr-4">
+                                    <i class="fa fa-calendar mr-1"></i> <span id="article-date">2024-07-15</span>
+                                </span>
+                                <span>
+                                    <i class="fa fa-clock-o mr-1"></i> <span id="article-read-time">10 分钟阅读</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 文章正文 -->
+                <div class="p-6 md:p-8">
+                    <div id="article-body" class="prose prose-lg max-w-none">
+                        <p class="lead text-xl text-gray-700 mb-8">
+                            在当今数字化时代，Web开发已成为一项至关重要的技能。本文将详细介绍现代Web开发的三大基础技术：HTML5、CSS3和JavaScript，帮助初学者建立坚实的基础知识体系。
+                        </p>
+                        
+                        <h2>1. HTML5：网页的结构</h2>
+                        <p>
+                            HTML5是HyperText Markup Language的第五个主要版本，它定义了网页的结构和内容。与早期版本相比，HTML5引入了许多新特性和语义化标签，使得网页结构更加清晰，同时也提供了更多的功能。
+                        </p>
+                        
+                        <h3>1.1 语义化标签</h3>
+                        <p>
+                            HTML5引入了一系列语义化标签，如&lt;header&gt;、&lt;nav&gt;、&lt;main&gt;、&lt;section&gt;、&lt;article&gt;、&lt;footer&gt;等。这些标签不仅使代码更具可读性，还有助于搜索引擎理解网页内容，提升SEO效果。
+                        </p>
+                        
+                        <div class="code-block my-6">
+                            <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;语义化HTML5示例&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;header&gt;
+        &lt;h1&gt;网站标题&lt;/h1&gt;
+        &lt;nav&gt;
+            &lt;ul&gt;
+                &lt;li&gt;&lt;a href="#"&gt;首页&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href="#"&gt;关于&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href="#"&gt;联系我们&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/nav&gt;
+    &lt;/header&gt;
+    
+    &lt;main&gt;
+        &lt;section&gt;
+            &lt;h2&gt;文章列表&lt;/h2&gt;
+            &lt;article&gt;
+                &lt;h3&gt;文章标题&lt;/h3&gt;
+                &lt;p&gt;文章内容...&lt;/p&gt;
+            &lt;/article&gt;
+        &lt;/section&gt;
+    &lt;/main&gt;
+    
+    &lt;footer&gt;
+        &lt;p&gt;© 2024 网站名称. 保留所有权利.&lt;/p&gt;
+    &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                        </div>
+                        
+                        <h3>1.2 HTML5新特性</h3>
+                        <p>
+                            HTML5还引入了许多新特性，如Canvas绘图、本地存储、地理位置API、音频和视频支持等。这些特性大大增强了Web应用的功能和用户体验。
+                        </p>
+                        
+                        <div class="quote">
+                            "HTML5不仅仅是HTML的一个新版本，它是Web开发的一场革命，为开发者提供了构建丰富、交互性强的Web应用的强大工具。"
+                        </div>
+                        
+                        <h2>2. CSS3：网页的样式</h2>
+                        <p>
+                            CSS3是Cascading Style Sheets的第三个主要版本，它负责网页的视觉呈现。CSS3引入了许多新特性，如圆角、阴影、渐变、动画、过渡效果等，使得网页设计更加灵活和丰富。
+                        </p>
+                        
+                        <h3>2.1 CSS3选择器</h3>
+                        <p>
+                            CSS3扩展了选择器的种类，提供了更多精确选择元素的方式，如属性选择器、伪类选择器、伪元素选择器等。
+                        </p>
+                        
+                        <div class="code-block my-6">
+                            <pre><code>/* 属性选择器 */
+input[type="text"] {
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+
+/* 伪类选择器 */
+a:hover {
+    color: #3b82f6;
+    text-decoration: underline;
+}
+
+/* 伪元素选择器 */
+p::first-line {
+    font-weight: bold;
+}
+
+/* 结构伪类 */
+ul li:nth-child(odd) {
+    background-color: #f8fafc;
+}</code></pre>
+                        </div>
+                        
+                        <h3>2.2 CSS3视觉效果</h3>
+                        <p>
+                            CSS3引入了许多视觉效果，如圆角、阴影、渐变等，使得网页设计更加美观和现代。
+                        </p>
+                        
+                        <div class="code-block my-6">
+                            <pre><code>/* 圆角 */
+.button {
+    border-radius: 8px;
+}
+
+/* 阴影 */
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 渐变 */
+.gradient-bg {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+}
+
+/* 过渡效果 */
+.box {
+    transition: all 0.3s ease;
+}
+
+.box:hover {
+    transform: scale(1.05);
+}</code></pre>
+                        </div>
+                        
+                        <h3>2.3 CSS3动画</h3>
+                        <p>
+                            CSS3提供了强大的动画功能，可以创建各种复杂的动画效果，而无需使用JavaScript。
+                        </p>
+                        
+                        <div class="code-block my-6">
+                            <pre><code>/* 定义动画 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 使用动画 */
+.element {
+    animation: fadeIn 0.5s ease-out;
+}</code></pre>
+                        </div>
+                        
+                        <h2>3. JavaScript：网页的交互</h2>
+                        <p>
+                            JavaScript是一种脚本语言，它负责网页的交互行为。JavaScript可以操作DOM元素、处理事件、发送AJAX请求、创建动画效果等，使得网页更加动态和交互。
+                        </p>
+                        
+                        <h3>3.1 DOM操作</h3>
+                        <p>
+                            DOM（Document Object Model）是HTML和XML文档的编程接口。JavaScript可以通过DOM API来操作网页元素，如添加、删除、修改元素等。
+                        </p>
+                        
+                        <div class="code-block my-6">
+                            <pre><code>// 获取元素
+const button = document.getElementById('myButton');
+const items = document.querySelectorAll('.list-item');
+
+// 修改元素
+button.textContent = '点击我';
+button.style.backgroundColor = '#3b82f6';
+
+// 添加事件监听器
+button.addEventListener('click', function() {
+    alert('按钮被点击了！');
+});
+
+// 创建新元素
+const newItem = document.createElement('li');
+newItem.textContent = '新的列表项';
+newItem.className = 'list-item';
+
+// 添加到DOM
+document.querySelector('ul').appendChild(newItem);</code></pre>
+                        </div>
+                        
+                        <h3>3.2 ES6+特性</h3>
+                        <p>
+                            ECMAScript 6（ES6）及其后续版本引入了许多新特性，如箭头函数、模板字符串、解构赋值、类、模块等，使得JavaScript代码更加简洁和现代化。
+                        </p>
+                        
+                        <div class="code-block my-6">
+                            <pre><code>// 箭头函数
+const add = (a, b) => a + b;
+
+// 模板字符串
+const name = '张三';
+const greeting = `你好，${name}！`;
+
+// 解构赋值
+const person = { firstName: '李', lastName: '四' };
+const { firstName, lastName } = person;
+
+// 类
+class Person {
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    sayHello() {
+        return `你好，我是${this.name}，今年${this.age}岁。`;
+    }
+}
+
+// 模块导入导出
+// export.js
+export const PI = 3.14159;
+export function calculateArea(radius) {
+    return PI * radius * radius;
+}
+
+// import.js
+import { PI, calculateArea } from './export.js';</code></pre>
+                        </div>
+                        
+                        <h3>3.3 异步编程</h3>
+                        <p>
+                            JavaScript是单线程语言，但通过异步编程可以处理耗时操作而不阻塞主线程。ES6引入了Promise，ES8引入了async/await，使得异步代码更加易于理解和维护。
+                        </p>
+                        
+                        <div class="code-block my-6">
+                            <pre><code>// Promise
+function fetchData() {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            const data = { success: true, message: '数据获取成功' };
+            resolve(data);
+        }, 1000);
+    });
+}
+
+fetchData()
+    .then(data => console.log(data))
+    .catch(error => console.error(error));
+
+// async/await
+async function getData() {
+    try {
+        const response = await fetch('https://api.example.com/data');
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('获取数据失败:', error);
+    }
+}</code></pre>
+                        </div>
+                        
+                        <h2>4. 现代Web开发工具和框架</h2>
+                        <p>
+                            除了基础技术外，现代Web开发还涉及各种工具和框架，如构建工具（Webpack、Vite）、前端框架（React、Vue、Angular）、CSS预处理器（Sass、Less）等。这些工具和框架可以提高开发效率，改善代码质量。
+                        </p>
+                        
+                        <h3>4.1 构建工具</h3>
+                        <p>
+                            构建工具可以自动化执行各种开发任务，如代码压缩、合并、转换等。
+                        </p>
+                        
+                        <ul>
+                            <li><strong>Webpack</strong>：功能强大的模块打包器</li>
+                            <li><strong>Vite</strong>：基于ESM的现代前端构建工具，速度极快</li>
+                            <li><strong>Parcel</strong>：零配置的Web应用打包器</li>
+                        </ul>
+                        
+                        <h3>4.2 前端框架</h3>
+                        <p>
+                            前端框架提供了结构化的开发方式，使得构建复杂的Web应用更加容易。
+                        </p>
+                        
+                        <ul>
+                            <li><strong>React</strong>：由Facebook开发的用于构建用户界面的JavaScript库</li>
+                            <li><strong>Vue</strong>：渐进式JavaScript框架，易于上手且功能强大</li>
+                            <li><strong>Angular</strong>：由Google维护的完整前端框架</li>
+                        </ul>
+                        
+                        <h3>4.3 CSS预处理器和框架</h3>
+                        <p>
+                            CSS预处理器扩展了CSS的功能，而CSS框架则提供了一套预设的样式和组件。
+                        </p>
+                        
+                        <ul>
+                            <li><strong>Sass/Less</strong>：流行的CSS预处理器，提供变量、嵌套、混合等功能</li>
+                            <li><strong>Tailwind CSS</strong>：实用优先的CSS框架，提供大量预设类</li>
+                            <li><strong>Bootstrap</strong>：最流行的前端框架，提供响应式布局和组件</li>
+                        </ul>
+                        
+                        <h2>5. 最佳实践和性能优化</h2>
+                        <p>
+                            为了创建高质量的Web应用，开发者应该遵循一些最佳实践，如代码组织、性能优化、可访问性等。
+                        </p>
+                        
+                        <h3>5.1 代码组织</h3>
+                        <p>
+                            良好的代码组织可以提高代码的可读性和可维护性。
+                        </p>
+                        
+                        <ul>
+                            <li>使用模块化开发，将代码分割成小的、可重用的模块</li>
+                            <li>遵循一致的命名约定和代码风格</li>
+                            <li>添加适当的注释，解释代码的用途和逻辑</li>
+                        </ul>
+                        
+                        <h3>5.2 性能优化</h3>
+                        <p>
+                            性能优化可以提高网页的加载速度和运行效率。
+                        </p>
+                        
+                        <ul>
+                            <li>压缩HTML、CSS和JavaScript文件</li>
+                            <li>使用图片优化技术，如适当的格式、尺寸和压缩</li>
+                            <li>实现懒加载，延迟加载非关键资源</li>
+                            <li>使用缓存策略，减少重复请求</li>
+                            <li>优化关键渲染路径，加快首屏渲染</li>
+                        </ul>
+                        
+                        <h3>5.3 可访问性</h3>
+                        <p>
+                            可访问性确保所有用户，包括残障用户，都能使用Web应用。
+                        </p>
+                        
+                        <ul>
+                            <li>使用语义化HTML，提供正确的文档结构</li>
+                            <li>确保足够的颜色对比度</li>
+                            <li>提供替代文本，描述图片和非文本内容</li>
+                            <li>支持键盘导航，不依赖鼠标</li>
+                            <li>使用ARIA属性，增强辅助技术的支持</li>
+                        </ul>
+                        
+                        <h2>6. 总结</h2>
+                        <p>
+                            HTML5、CSS3和JavaScript是现代Web开发的三大基础技术。掌握这些技术，可以创建功能丰富、视觉吸引力强、用户体验良好的Web应用。同时，了解和使用现代开发工具和框架，遵循最佳实践，可以提高开发效率和代码质量。
+                        </p>
+                        
+                        <p>
+                            Web开发是一个不断发展的领域，新技术和工具不断涌现。作为开发者，应该保持学习的热情，不断更新自己的知识和技能，以适应行业的变化和需求。
+                        </p>
+                        
+                        <div class="quote">
+                            "学习Web开发不仅仅是掌握技术，更是培养解决问题的思维方式和持续学习的能力。"
+                        </div>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- 文章导航 -->
+            <div class="max-w-4xl mx-auto mt-8 flex flex-col md:flex-row justify-between">
+                <a href="#" class="flex items-center p-4 bg-white rounded-lg shadow-md mb-4 md:mb-0 hover:bg-gray-50 transition-colors">
+                    <span class="fa fa-arrow-left text-primary mr-3"></span>
+                    <div>
+                        <span class="text-sm text-gray-500">上一篇</span>
+                        <p class="font-medium">现代UI/UX设计原则与实践</p>
+                    </div>
+                </a>
+                
+                <a href="#" class="flex items-center p-4 bg-white rounded-lg shadow-md hover:bg-gray-50 transition-colors">
+                    <div class="text-right">
+                        <span class="text-sm text-gray-500">下一篇</span>
+                        <p class="font-medium">软件工程最佳实践：从需求到部署</p>
+                    </div>
+                    <span class="fa fa-arrow-right text-primary ml-3"></span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">关于博客</h3>
+                    <p class="text-gray-400">
+                        这是一个分享前端开发、UI/UX设计和软件工程知识的个人博客，致力于帮助开发者提升技能和解决问题。
+                    </p>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-bold mb-4">快速链接</h3>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-400 hover:text-white transition-colors">首页</a></li>
+                        <li><a href="index.html#articles" class="text-gray-400 hover:text-white transition-colors">文章列表</a></li>
+                        <li><a href="index.html#about" class="text-gray-400 hover:text-white transition-colors">关于我</a></li>
+                        <li><a href="index.html#contact" class="text-gray-400 hover:text-white transition-colors">留言板</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-bold mb-4">联系方式</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <span class="fa fa-envelope mr-2 text-primary"></span>
+                            <a href="mailto:contact@techblog.com" class="text-gray-400 hover:text-white transition-colors">contact@techblog.com</a>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="fa fa-github mr-2 text-primary"></span>
+                            <a href="https://github.com" target="_blank" class="text-gray-400 hover:text-white transition-colors">GitHub</a>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="fa fa-twitter mr-2 text-primary"></span>
+                            <a href="https://twitter.com" target="_blank" class="text-gray-400 hover:text-white transition-colors">Twitter</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+                <p class="text-gray-400">© 2024 Tech Blog. 保留所有权利。</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 返回顶部按钮 -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg opacity-0 invisible transition-all duration-300 hover:bg-primary/90">
+        <span class="fa fa-arrow-up"></span>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 移动端菜单切换
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            menuToggle.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // 返回顶部按钮
+            const backToTopButton = document.getElementById('back-to-top');
+            
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 600) {
+                    backToTopButton.classList.remove('opacity-0', 'invisible');
+                    backToTopButton.classList.add('opacity-100', 'visible');
+                } else {
+                    backToTopButton.classList.remove('opacity-100', 'visible');
+                    backToTopButton.classList.add('opacity-0', 'invisible');
+                }
+            });
+            
+            backToTopButton.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // 根据URL参数加载不同文章
+            const urlParams = new URLSearchParams(window.location.search);
+            const articleId = urlParams.get('id');
+            
+            // 文章数据
+            const articles = {
+                '1': {
+                    title: 'Web开发基础：HTML5、CSS3和JavaScript',
+                    category: '前端开发',
+                    date: '2024-07-15',
+                    readTime: '10 分钟阅读',
+                    image: 'https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/f040d844fb324bc6a2c08760e289a8a0~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260414222800F41C8E3D74834C667F8D&rrcfp=f06b921b&x-expires=1778768910&x-signature=%2FdRSfkqiiuZpp8rm7HyZPDpFniw%3D'
+                },
+                '2': {
+                    title: '现代UI/UX设计原则与实践',
+                    category: 'UI/UX设计',
+                    date: '2024-07-10',
+                    readTime: '8 分钟阅读',
+                    image: 'https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/953b75fe284d4ac4994a9d8b493172d9~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260414222800F41C8E3D74834C667F8D&rrcfp=f06b921b&x-expires=1778768913&x-signature=fiF67Qji3kp5wJ9BUy0AEnlzP%2Bg%3D'
+                },
+                '3': {
+                    title: '软件工程最佳实践：从需求到部署',
+                    category: '软件工程',
+                    date: '2024-07-05',
+                    readTime: '12 分钟阅读',
+                    image: 'https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/b56ccf193e01411b949b744ebaa11e2f~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260414222800F41C8E3D74834C667F8D&rrcfp=f06b921b&x-expires=1778768914&x-signature=89OWZd4vuQacZy9s09tqv6aGXFY%3D'
+                }
+            };
+            
+            // 如果有文章ID参数，更新文章内容
+            if (articleId && articles[articleId]) {
+                const article = articles[articleId];
+                
+                // 更新页面标题
+                document.title = `${article.title} | Tech Insights & Innovations`;
+                
+                // 更新文章内容
+                document.getElementById('article-title').textContent = article.title;
+                document.getElementById('article-category').textContent = article.category;
+                document.getElementById('article-date').textContent = article.date;
+                document.getElementById('article-read-time').textContent = article.readTime;
+                document.getElementById('article-image').src = article.image;
+                document.getElementById('article-image').alt = article.title;
+                
+                // 根据文章ID更新分类标签颜色
+                const categoryElement = document.getElementById('article-category');
+                categoryElement.className = 'inline-block text-white text-sm font-medium px-3 py-1 rounded-full mb-4';
+                
+                if (article.category === '前端开发') {
+                    categoryElement.classList.add('bg-primary');
+                } else if (article.category === 'UI/UX设计') {
+                    categoryElement.classList.add('bg-secondary');
+                } else if (article.category === '软件工程') {
+                    categoryElement.classList.add('bg-accent');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
